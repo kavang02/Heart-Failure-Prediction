@@ -1,8 +1,11 @@
+setwd("/Users/Brian/Desktop/ds-project/Heart-Failure-Prediction")
 library(readr)
 heart_failure <- read_csv("heart_failure_clinical_records_dataset.csv")
+na_counts <- colSums(is.na(heart_failure))
+print(na_counts)
+
 View(heart_failure)
 correlation_matrix <- cor(heart_failure)
-View(correlation_matrix)
 print(correlation_matrix)
 installed.packages("corrplot")
 library(corrplot)
@@ -14,14 +17,14 @@ corrplot(correlation_matrix, method = "color", type = "full", tl.srt = 45,
 #model off of
 library(ggplot2)
 summary(heart_failure$age)
-heart_failure$DEATH_EVENT <- factor(heart_failure$DEATH_EVENT, labels = c("Alive", "Dead"))
-heart_failure |>
-  ggplot(aes(x = age)) +
-  geom_bar(aes(fill = DEATH_EVENT), position = "dodge") +
-  scale_fill_manual(values = c("blue", "red")) +
-  labs(title = "Group Bar Plot of Age Distribution by Death Event", x = "Age", y = "Count") 
-#we have a gap in ages the lowest age is 40. we typically see deaths in ages 60 
-#and above with 60 having the most, right skewed with a tail 
+heart_failure$DEATH_EVENT <- as.factor(heart_failure$DEATH_EVENT)
+ggplot(heart_failure, aes(x = DEATH_EVENT, y = age)) +
+  geom_boxplot() +
+  labs(title = "Boxplots of Age for Different Death Events",
+       x = "Death Event",
+       y = "Age") +
+  theme_minimal()
+
 summary(heart_failure$ejection_fraction)
 heart_failure |> 
   ggplot(aes(x = ejection_fraction)) +
