@@ -1,0 +1,27 @@
+# Load data
+library(readr)
+hfdata <- read_csv("heart_failure_clinical_records_dataset.csv")
+
+#Now we will split the data into test and training we chose 70-30
+# install.packages("rsample") run once
+library(rsample)
+set.seed(123)
+health_split <- initial_split(hfdata,prop = 0.70)
+train_data <- training(health_split)
+test_data <- testing(health_split)
+
+# Perform logistic regression on the train_data
+log_reg_model <- glm(DEATH_EVENT ~ age + serum_creatinine + ejection_fraction, 
+                     data = train_data, 
+                     family = binomial())
+# summary of logistic regression model
+summary(log_reg_model)
+# apply the model on the test_data
+log_reg_pred <- predict(log_reg_model, newdata = test_data, type = "response")
+# install.packages("pROC") run once
+library(pROC)
+roc_curve <- roc(test_data$DEATH_EVENT, log_reg_pred)
+plot(roc_curve, main = "ROC Curve", col = "blue")
+auc_result <- auc(roc_curve)
+legend("bottomright", legend = paste("AUC =", round(auc_result, 2)), col = "blue", lty = 1, cex = 0.8)
+
