@@ -204,3 +204,22 @@ conf_matrix <- table(knn_model, y_test)
 print(paste("Accuracy:", accuracy))
 print("Confusion Matrix:")
 print(conf_matrix)
+
+# Baseline Model Naive Bayes
+library(e1071)
+set.seed(123)
+health_split <- initial_split(heart_failure,prop = 0.70)
+train_data <- training(health_split)
+test_data <- testing(health_split)
+model <- naiveBayes(DEATH_EVENT ~ age + ejection_fraction + serum_creatinine, data = heart_failure, usekernel = T) 
+#train data 
+p <- predict(model, train_data, type = 'class')
+
+p1 <- predict(model, train_data)
+(tab1 <- table(p1, train_data$DEATH_EVENT))
+1 - sum(diag(tab1)) / sum(tab1)
+#Test data 
+p2 <- predict(model, test_data)
+(tab2 <- table(p2, test_data$DEATH_EVENT))
+1 - sum(diag(tab2)) / sum(tab2)
+# Our baseline Model has 70-78% accuracy on the test data
