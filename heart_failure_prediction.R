@@ -206,12 +206,6 @@ print("Confusion Matrix:")
 print(conf_matrix)
 
 # Baseline Model Naive Bayes
-install.packages("naivebayes")
-install.packages("pysch")
-library(naivebayes)
-library(dplyr)
-library(ggplot2)
-library(psych)
 library(e1071)
 set.seed(123)
 health_split <- initial_split(heart_failure,prop = 0.70)
