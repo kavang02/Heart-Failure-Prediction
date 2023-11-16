@@ -1,3 +1,5 @@
+# set working directory
+# setwd("/Users/Brian/Desktop/ds-project/Heart-Failure-Prediction")
 # Load data
 library(readr)
 hfdata <- read_csv("heart_failure_clinical_records_dataset.csv")
@@ -9,6 +11,15 @@ set.seed(123)
 health_split <- initial_split(hfdata,prop = 0.70)
 train_data <- training(health_split)
 test_data <- testing(health_split)
+
+# Convert DEATH_EVENT to a factor for classification (data transformation)
+train_data$DEATH_EVENT <- as.factor(train_data$DEATH_EVENT)
+test_data$DEATH_EVENT <- as.factor(test_data$DEATH_EVENT)
+
+# Subset train_data and test_data to include only relevant columns (data transformation)
+relevant_columns <- c("age", "serum_creatinine", "ejection_fraction", "DEATH_EVENT")
+train_data <- train_data[, relevant_columns]
+test_data <- test_data[, relevant_columns]
 
 # Perform logistic regression on the train_data
 log_reg_model <- glm(DEATH_EVENT ~ age + serum_creatinine + ejection_fraction, 

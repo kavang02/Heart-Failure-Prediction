@@ -1,4 +1,6 @@
-#setwd("/Users/Brian/Desktop/ds-project/Heart-Failure-Prediction")
+# set working directory
+# setwd("/Users/Brian/Desktop/ds-project/Heart-Failure-Prediction")
+
 # load data
 library(readr)
 heart_failure <- read_csv("heart_failure_clinical_records_dataset.csv")
