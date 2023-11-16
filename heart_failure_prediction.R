@@ -1,4 +1,4 @@
-setwd("/Users/Brian/Desktop/ds-project/Heart-Failure-Prediction")
+
 library(readr)
 heart_failure <- read_csv("heart_failure_clinical_records_dataset.csv")
 na_counts <- colSums(is.na(heart_failure))
@@ -162,7 +162,14 @@ rfConfMat <- confusionMatrix(rfTest, test_data$DEATH_EVENT)
 rfAccuary <- sum(diag(rfConfMat$table)) / sum(rfConfMat$table)
 rfAccuary
 
-varImpPlot(rf, sort = TRUE)
+importance_df <- as.data.frame(importance(rf))
+importance_df$variable <- rownames(importance_df)
+ggplot(importance_df, aes(x = reorder(variable, MeanDecreaseGini), y = MeanDecreaseGini)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "Variable Importance in Random Forest") +
+  xlab("Variable") +
+  ylab("Variable Importance in Model") +
+  theme_minimal()
 
 
 install.packages("class") 
