@@ -1,5 +1,8 @@
-# set working directory
+# RANDOM FOREST
+
+# set working directory that suits you
 # setwd("/Users/Brian/Desktop/ds-project/Heart-Failure-Prediction")
+
 # Load data
 library(readr)
 hfdata <- read_csv("heart_failure_clinical_records_dataset.csv")
@@ -43,6 +46,46 @@ predictions <- predict(rf_model, test_data)
 # Evaluate the model's performance on test_data
 confusionMatrix(predictions, test_data$DEATH_EVENT)
 # result: 0.7111 accuracy
+
+
+# Stratified k-fold Cross-Validation on Random Forest
+
+# set working directory that suits you
+# setwd("/Users/Brian/Desktop/ds-project/Heart-Failure-Prediction")
+
+# Load data
+library(readr)
+hfdata <- read_csv("heart_failure_clinical_records_dataset.csv")
+
+# install.packages("caret") # run once
+# install.packages("randomForest") # run once
+# install.packages("ggplot2") # run once
+library(ggplot2)
+library(caret)
+library(randomForest)
+
+# we need DEATH_EVENT to be a factor
+hfdata$DEATH_EVENT <- as.factor(hfdata$DEATH_EVENT)
+
+# change DEATH_EVENT (factor) to 0 or 1 to valid R variable name
+levels(hfdata$DEATH_EVENT) <- c("ALIVE", "DEAD")
+
+# 10-fold cross-validation repeated 3 times
+control <- trainControl(method = "repeatedcv", 
+                        number = 10, 
+                        repeats = 3,
+                        classProbs = TRUE, 
+                        summaryFunction = twoClassSummary)
+set.seed(123)  # for reproducibility
+# build the Stratified k-fold Cross-Validation model for Random Forest of whole data
+cv_model_rf <- train(DEATH_EVENT ~ age + serum_creatinine + ejection_fraction,
+                  data = hfdata,  
+                  method = "rf", # random forest
+                  trControl = control,
+                  metric = "ROC")
+print(cv_model_rf) # print the result
+
+
 
 
 
